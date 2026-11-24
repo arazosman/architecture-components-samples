@@ -16,16 +16,24 @@
 
 package com.example.android.navigationsample
 
+import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android.navigationsample.ui.AppNavDisplay
 
 /**
- * An activity that inflates a layout that has a NavHostFragment.
+ * Main activity hosting the Compose Navigation 3 UI.
  */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+        )
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContent { AppNavDisplay() }
     }
 }

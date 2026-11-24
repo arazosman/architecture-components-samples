@@ -22,6 +22,8 @@ buildscript {
     dependencies {
         classpath deps.android_gradle_plugin
         classpath deps.kotlin.plugin
+        classpath deps.kotlin.compose_plugin
+        classpath deps.kotlin.serialization_plugin
     }
 }
 
@@ -29,6 +31,6 @@ allprojects {
     addRepos(repositories)
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

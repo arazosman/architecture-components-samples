@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.plugin.compose'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
 
 android {
-    compileSdkVersion build_versions.compile_sdk
+    namespace = "com.example.android.navigationsample"
+    compileSdk = build_versions.compile_sdk
     defaultConfig {
-        applicationId "com.example.android.navigationsample"
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId = "com.example.android.navigationsample"
+        minSdk = build_versions.min_sdk
+        targetSdk = build_versions.target_sdk
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    buildFeatures {
+        compose = true
     }
 
     // Robolectric
@@ -53,17 +54,21 @@ android {
     }
 
     sourceSets {
-        androidTest {
-            java.srcDirs += "src/uiTest/java"
+        named("androidTest") {
+            java.directories.add("src/uiTest/java")
+            kotlin.directories.add("src/uiTest/java")
         }
-        test {
-            java.srcDirs += "src/uiTest/java"
-            resources.srcDirs += 'src/uiTest/resources'
+        named("test") {
+            java.directories.add("src/uiTest/java")
+            kotlin.directories.add("src/uiTest/java")
+            resources.directories.add("src/uiTest/resources")
         }
     }
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.10.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.10.2'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.kotlin.stdlib
     implementation deps.app_compat
@@ -77,12 +82,25 @@ dependencies {
     implementation deps.navigation.runtime_ktx
     implementation deps.fragment.runtime_ktx
 
+    implementation platform(deps.compose.bom)
+    implementation deps.compose.ui
+    implementation deps.compose.material3
+    implementation deps.compose.ui_tooling_preview
+    debugImplementation deps.compose.ui_tooling
+    debugImplementation deps.compose.ui_test_manifest
+    implementation deps.activity.compose
+    implementation deps.kotlinx_serialization_core
+    implementation deps.navigation3.runtime
+    implementation deps.navigation3.ui
+
     // "androidx.fragment:fragment-testing" must be scoped to all sourcesets.
     implementation deps.fragment.testing
     // Forcing androidx.test:core version
     implementation deps.atsl.core
 
     // Espresso and UI Testing
+    androidTestImplementation platform(deps.compose.bom)
+    androidTestImplementation deps.compose.ui_test_junit4
     androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core
@@ -92,6 +110,8 @@ dependencies {
     androidTestImplementation deps.truth
 
     // Host-side tests
+    testImplementation platform(deps.compose.bom)
+    testImplementation deps.compose.ui_test_junit4
     testImplementation deps.atsl.core
     testImplementation deps.atsl.ext_junit
     testImplementation deps.robolectric
